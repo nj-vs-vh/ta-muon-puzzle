@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]
+then
+    echo 'bld [memory per node (GB)]'
+    exit
+fi
+
+#source /scratch/kingspeak/serial/u0905040/COR_test/tasdmc/sourceMe.sh
+#export TESTDIR=/scratch/kingspeak/serial/u0905040/test_dc2s
+#export DATA_LOCAL=${TESTDIR}/data.${USER}
+
+export CFLAGS="-O3"
+export DSTDIR=${TASDMC}/src/dst2k-ta-pro
+export INCS=-I${DSTDIR}/inc
+export LIBS="-lm -lc -lz -lbz2 -L${DSTDIR}/lib -ldst2k"
+
+if [ `arch` != "x86_64" ]
+then
+    export CFLAGS="${CFLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"
+fi
+
+echo "$CC ${CFLAGS} -o ${TASDMCBIN}/deweight deweight.c corsika_weights.c atmos_conv.c -lm"
+$CC ${CFLAGS} -o ${TASDMCBIN}/deweight deweight.c corsika_weights.c atmos_conv.c -lm
+echo "$CC ${CFLAGS} -o ${TASDMCBIN}/corsika_split-th corsika_split-th.c -lm"
+$CC ${CFLAGS} -o ${TASDMCBIN}/corsika_split-th corsika_split-th.c -lm
+
+let i=16*${1}
+echo "#define NT ${i}" > array_sz.h
+echo "$CC ${CFLAGS} ${INCS}  -o ${TASDMCBIN}/corsika2geant_${1}g corsika2geant.c corsika_vem.c corsika_vem_init.c corsika_times.c eloss_sdgeant.c ${LIBS}"
+$CC ${CFLAGS} ${INCS} -mcmodel=medium  -o ${TASDMCBIN}/corsika2geant_${1}g corsika2geant_2.c corsika_vem_2.c corsika_vem_init_2.c corsika_times_2.c eloss_sdgeant_2.c ${LIBS}

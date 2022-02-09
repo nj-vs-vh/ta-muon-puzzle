@@ -1,0 +1,6 @@
+For no atmosrheric muon, use
+ ./bld_mod1 2
+source file is
+ sdmc_spctr_noa.c
+exe file is
+ ../../bin/sdmc_spctr_noa

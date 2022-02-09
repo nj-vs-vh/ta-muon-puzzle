@@ -1,0 +1,9 @@
+Script started on Thu 15 Oct 2015 12:25:04 AM MDT
+]0;u0905040@kingspeak1:/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/sdmc[?1034h[u0905040@kingspeak1 sdmc]$ ./bld_mod1 2
+gcc -O3 -mcmodel=medium -I/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/dst2k-ta-pro/inc -o /scratch/kingspeak/serial/u0905040/COR_test/tasdmc/bin/sdmc_spctr_2g_noa sdmc_spctr_noa.c date.c -lm -lc -lz -lbz2 -L/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/dst2k-ta-pro/lib -ldst2k
+gcc -O3 -mcmodel=medium -I/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/dst2k-ta-pro/inc -o /scratch/kingspeak/serial/u0905040/COR_test/tasdmc/bin/sdmc_pre_2g sdmc_pre.c date.c -lm -lc -lz -lbz2 -L/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/dst2k-ta-pro/lib -ldst2k
+gcc -O3 -I/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/dst2k-ta-pro/inc -o /scratch/kingspeak/serial/u0905040/COR_test/tasdmc/bin/dstspctr dstspctr.c -lm -lc -lz -lbz2 -L/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/dst2k-ta-pro/lib -ldst2k
+]0;u0905040@kingspeak1:/scratch/kingspeak/serial/u0905040/COR_test/tasdmc/src/sdmc[u0905040@kingspeak1 sdmc]$ exit
+exit
+
+Script done on Thu 15 Oct 2015 12:25:18 AM MDT

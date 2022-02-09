@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]
+then
+    echo 'bld [memory per thread (GB)]'
+    exit
+fi
+if [[ $1 -lt 2 ]]
+then
+    echo 'There must be a minimum of 2 GB per thread'
+    exit
+fi
+
+export CFLAGS="-O3"
+export DSTDIR=${TASDMC}/src/dst2k-ta-pro
+export INCS=-I${DSTDIR}/inc
+export LIBS="-lm -lc -lz -lbz2 -L${DSTDIR}/lib -ldst2k"
+
+if [ `arch` != "x86_64" ]
+then
+    export CFLAGS="${CFLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"
+fi
+
+let i=${1}*17-17
+echo "#define NT ${i}" > array_sz.h
+echo "${CC} ${CFLAGS} -mcmodel=medium ${INCS} -o ${TASDMCBIN}/sdmc_spctr_${1}g_noa sdmc_spctr_noa.c date.c ${LIBS}"
+$CC ${CFLAGS} -mcmodel=medium ${INCS} -o ${TASDMCBIN}/sdmc_spctr_${1}g_noa sdmc_spctr_noa.c date.c ${LIBS}
+echo "${CC} ${CFLAGS} -mcmodel=medium ${INCS} -o ${TASDMCBIN}/sdmc_pre_${1}g sdmc_pre.c date.c ${LIBS}"
+$CC ${CFLAGS} -mcmodel=medium ${INCS} -o ${TASDMCBIN}/sdmc_pre_${1}g sdmc_pre.c date.c ${LIBS}
+echo "$CC ${CFLAGS} ${INCS} -o ${TASDMCBIN}/dstspctr dstspctr.c ${LIBS}"
+$CC ${CFLAGS} ${INCS} -o ${TASDMCBIN}/dstspctr dstspctr.c ${LIBS}
+
