@@ -5,7 +5,10 @@ import subprocess
 VERBOSITY = "1"
 
 
-def check_result(res: subprocess.CompletedProcess[bytes]):
+DATA_DIR = Path(__file__).parent / "data"
+
+
+def check_result(res: subprocess.CompletedProcess):
     cmd = " ".join([str(a) for a in res.args])
     if res.returncode == 0:
         print("OK " + cmd)
@@ -16,15 +19,15 @@ def check_result(res: subprocess.CompletedProcess[bytes]):
         raise RuntimeError()
 
 
-def reconstruct(events_dst: Path) -> Path:
+def reconstruct(events_dst: Path) -> str:
     events_dst_name = events_dst.name
-    outdir = events_dst.parent / "out"
 
-    outdir.mkdir(exist_ok=True)
+    temp_dst_dir = events_dst.parent / "temp_dst"
+    temp_dst_dir.mkdir(exist_ok=True)
 
-    rufptn_out = outdir / (events_dst_name + ".rufptn.dst.gz")
-    sdtrgbk_out = outdir / (events_dst_name + ".sdtrgbk.dst.gz")
-    rufldf_out = outdir / (events_dst_name + ".rufldf.dst.gz")
+    rufptn_out = temp_dst_dir / (events_dst_name + ".rufptn.dst.gz")
+    sdtrgbk_out = temp_dst_dir / (events_dst_name + ".sdtrgbk.dst.gz")
+    rufldf_out = temp_dst_dir / (events_dst_name + ".rufldf.dst.gz")
 
     res = subprocess.run(
         ["rufptn.run", events_dst, "-o1f", rufptn_out, "-v", VERBOSITY, "-f"],
@@ -56,11 +59,10 @@ def reconstruct(events_dst: Path) -> Path:
 
 
 def process_dat(datname: str):
-    full_dst = Path(datname + "_0_gea.dst.gz")
+    full_dst = DATA_DIR / (datname + "_0_gea.dst.gz")
     nuf_mu_output = reconstruct(full_dst)
+    print(nuf_mu_output.splitlines()[0])
     
-
-
 
 if __name__ == "__main__":
     process_dat("DAT009512")
