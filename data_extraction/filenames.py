@@ -1,6 +1,7 @@
 from pathlib import Path
-
 from enum import Enum
+
+from typing import List, Optional, Set
 
 
 class DstFileType(Enum):
@@ -12,7 +13,12 @@ class DstFileType(Enum):
     NOISE = 5
 
 
-DATA_DIR = None
+DATA_DIR: Optional[Path] = None
+
+
+def assert_data_dir_set():
+    if DATA_DIR is None:
+        raise RuntimeError("Call set_data_dir first")
 
 
 def set_data_dir(new: Path):
@@ -20,7 +26,12 @@ def set_data_dir(new: Path):
     DATA_DIR = new
 
 
+def collect_dat_names() -> List[str]:
+    assert_data_dir_set()
+    dir: Path = DATA_DIR
+    return sorted({file.name[:9] for file in dir.iterdir() if file.is_file() and file.name.startswith("DAT")})
+
+
 def get_dst_file(dat_name: str, type: DstFileType = DstFileType.FULL) -> Path:
-    if DATA_DIR is None:
-        raise RuntimeError("Call set_data_dir first")
+    assert_data_dir_set()
     return DATA_DIR / f"{dat_name}_{type.value}_gea.dst.gz"
