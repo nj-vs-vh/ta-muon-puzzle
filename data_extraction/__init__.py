@@ -18,6 +18,7 @@ def process_dat(dat_name: str, output_csv: Path):
         return
 
     # dumping csv
+    global HAS_WRITTEN_BEFORE
     with open(output_csv, "a" if HAS_WRITTEN_BEFORE else "w") as f:
         writer = csv.DictWriter(f, fieldnames=[f.name for f in fields(DetectorData)])
         if not HAS_WRITTEN_BEFORE:
@@ -27,7 +28,5 @@ def process_dat(dat_name: str, output_csv: Path):
                 # this should be true most of the time
                 if data.mu_signal_ratio_bot is not None and data.mu_signal_ratio_top is not None:
                     writer.writerow(asdict(data))
-    
-    global HAS_WRITTEN_BEFORE
     HAS_WRITTEN_BEFORE = True
 
