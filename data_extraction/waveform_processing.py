@@ -11,6 +11,22 @@ from .reconstruction import DetectorDataByEvent, DetectorIdx
 from .filenames import get_dst_file, DstFileType
 
 
+def get_datetime(rusdraw: Bank) -> datetime:
+    return datetime.strptime(
+        f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}", r"%y%m%d %H%M%S %f"
+    )
+
+
+def assemble_waveforms(wf_part_by_id: Dict[DetectorIdx, Dict[int, np.ndarray]]) -> Tuple[np.ndarray, np.ndarray]:
+    """Assemble waveforms from their 128-bin parts"""
+    wf_top = []
+    wf_bot = []
+    for wf_id in sorted(wf_part_by_id.keys()):
+        wf_top.extend(wf_part_by_id[wf_id][1])  # 1 is top in rusdraw!
+        wf_bot.extend(wf_part_by_id[wf_id][0])  # 0 is bot in rusdraw!
+    return np.array(wf_top), np.array(wf_bot)
+
+
 def add_mu_ratios_to_detector_data(dat_name: str, detector_data_by_event: DetectorDataByEvent):
     full_dst = DstFile(get_dst_file(dat_name, type=DstFileType.FULL))
     mu_dst = DstFile(get_dst_file(dat_name, type=DstFileType.MU))
@@ -20,9 +36,7 @@ def add_mu_ratios_to_detector_data(dat_name: str, detector_data_by_event: Detect
 
         #                                                                  xxyy: waveform integrals top/bot
         def process_rusdraw(rusdraw: Bank) -> Optional[Tuple[datetime, Dict[DetectorIdx, Tuple[float, float]]]]:
-            datetime_ = datetime.strptime(
-                f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}", r"%y%m%d %H%M%S %f"
-            )
+            datetime_ = get_datetime(rusdraw)
             if datetime_ not in detector_data_by_event:
                 # this means that waveforms are present but didn't pass triggers / cuts
                 # print(f"Found datetime not present in nuf output: {datetime_}")
@@ -67,8 +81,9 @@ def add_mu_ratios_to_detector_data(dat_name: str, detector_data_by_event: Detect
                         assert not np.isclose(full_signal_integral_wo_noise, 0)
                         mu_ratio = mu_integrals[dt][xxyy][i] / full_signal_integral_wo_noise
                         if mu_ratio > 1:
-                            print(f"Anomalous mu ratio {mu_ratio}: {dt} {xxyy}")
-                            raise ValueError()
+                            # pure muon signals sometimes get fractions like 1.001 because of integral estimation error
+                            # print(f"Anomalous mu ratio {mu_ratio}: {dt} {xxyy}")
+                            mu_ratio = 1.0
                         mu_ratios.append(mu_ratio)
 
                     detector_data[xxyy].mu_signal_ratio_top = mu_ratios[1]  # rusdraw convention is 0 for bot, 1 for top
