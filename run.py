@@ -13,15 +13,15 @@ if __name__ == "__main__":
     parser.add_argument("data_dir_path")
     parser.add_argument("output_dir_path", default="..")
     parser.add_argument("logs_dir_path", default="..")
-    parser.add_argument("--n_proc", help="number of processes to run in parallel", type=int, default=1)
-    parser.add_argument("--n_first", help="process only first n files", type=int, default=0)
+    parser.add_argument("--nproc", help="number of processes to run in parallel", type=int, default=1)
+    parser.add_argument("--nfirst", help="process only first n files", type=int, default=0)
     args = parser.parse_args()
 
     set_data_dir((Path(__file__).parent / args.data_dir_path).resolve())
     dat_names = collect_dat_names()
-    if args.n_first:
-        dat_names = dat_names[:args.n_first]
-    print(f"Processing: {','.join(dat_names)}")
+    if args.nfirst:
+        dat_names = dat_names[:args.nfirst]
+    print(f"Processing: {len(dat_names)} files: from {dat_names[0]} to {dat_names[-1]}")
 
     def process_dat_threadsafe(dat_name: str):
         pid = os.getpid()
@@ -31,4 +31,4 @@ if __name__ == "__main__":
             with pipes(stdout=log, stderr=log):
                 process_dat(dat_name, threadsafe_output_csv)
 
-    process_map(process_dat_threadsafe, dat_names, max_workers=args.n_proc)
+    process_map(process_dat_threadsafe, dat_names, max_workers=args.nproc)
