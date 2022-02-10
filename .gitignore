@@ -6,3 +6,4 @@ venv
 temp_dst/
 *.csv
 *.txt
+*.log
