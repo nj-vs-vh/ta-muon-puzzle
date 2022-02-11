@@ -14,11 +14,13 @@ HAS_WRITTEN_BEFORE = False
 
 def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[str] = None):
     try:
+        print(f"\n====================\nProcessing {dat_name}")
+        print("Reconstruction")
         detector_data_by_event = reconstruct(dat_name, temp_dir)
         print("Calculating muon ratio from waveforms")
         add_mu_ratios_to_detector_data(dat_name, detector_data_by_event)
     except Exception:
-        print(f"ERROR processing {dat_name}:\n{traceback.format_exc()}\n\n")
+        print(f"ERROR processing {dat_name}:\n{traceback.format_exc()}\n")
         return
 
     # dumping csv

@@ -69,7 +69,6 @@ def parse_detector_data_by_event(nuf_output: str) -> DetectorDataByEvent:
 
 
 def reconstruct(dat_name: Path, temp_dir: Optional[str]) -> DetectorDataByEvent:
-    print(f"Running reconstruction for {dat_name}")
     VERBOSITY = "1"
 
     full_dst = get_dst_file(dat_name)
