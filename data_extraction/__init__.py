@@ -12,7 +12,7 @@ from .waveform_processing import add_mu_ratios_to_detector_data
 HAS_WRITTEN_BEFORE = False
 
 
-def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[Path] = None):
+def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[str] = None):
     try:
         detector_data_by_event = reconstruct(dat_name, temp_dir)
         print("Calculating muon ratio from waveforms")
