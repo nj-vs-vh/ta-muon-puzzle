@@ -68,19 +68,19 @@ def parse_detector_data_by_event(nuf_output: str) -> DetectorDataByEvent:
     return res
 
 
-def reconstruct(dat_name: Path) -> DetectorDataByEvent:
+def reconstruct(dat_name: Path, temp_dir: Optional[Path]) -> DetectorDataByEvent:
     print(f"Running reconstruction for {dat_name}")
     VERBOSITY = "1"
 
     full_dst = get_dst_file(dat_name)
     events_dst_name = full_dst.name
 
-    temp_dst_dir = full_dst.parent / "temp_dst"
-    temp_dst_dir.mkdir(exist_ok=True)
+    temp_dir = temp_dir or full_dst.parent / "temp_dst"
+    temp_dir.mkdir(exist_ok=True)
 
-    rufptn_out = temp_dst_dir / (events_dst_name + ".rufptn.dst.gz")
-    sdtrgbk_out = temp_dst_dir / (events_dst_name + ".sdtrgbk.dst.gz")
-    rufldf_out = temp_dst_dir / (events_dst_name + ".rufldf.dst.gz")
+    rufptn_out = temp_dir / (events_dst_name + ".rufptn.dst.gz")
+    sdtrgbk_out = temp_dir / (events_dst_name + ".sdtrgbk.dst.gz")
+    rufldf_out = temp_dir / (events_dst_name + ".rufldf.dst.gz")
 
     if not rufptn_out.exists():
         res = subprocess.run(

@@ -15,6 +15,7 @@ if __name__ == "__main__":
     parser.add_argument("logs_dir_path", default="..")
     parser.add_argument("--nproc", help="number of processes to run in parallel", type=int, default=1)
     parser.add_argument("--nfirst", help="process only first n files", type=int, default=0)
+    parser.add_argument("--tempdir", help="dir for temp dst files")
     args = parser.parse_args()
 
     set_data_dir((Path(__file__).parent / args.data_dir_path).resolve())
@@ -29,6 +30,6 @@ if __name__ == "__main__":
         log_file = Path(args.logs_dir_path) / f"{pid}.log"
         with open(log_file, "a") as log:
             with pipes(stdout=log, stderr=log):
-                process_dat(dat_name, threadsafe_output_csv)
+                process_dat(dat_name, threadsafe_output_csv, temp_dir=args.tempdir)
 
     process_map(process_dat_threadsafe, dat_names, max_workers=args.nproc)
