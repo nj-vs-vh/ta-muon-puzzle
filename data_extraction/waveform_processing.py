@@ -34,9 +34,16 @@ def add_mu_ratios_to_detector_data(dat_name: str, detector_data_by_event: Detect
 
     with full_dst, mu_dst, noise_dst:
 
-        #                                                                  xxyy: waveform integrals top/bot
+        #                                                                          xxyy: waveform integrals top/bot
         def process_rusdraw(rusdraw: Bank) -> Optional[Tuple[datetime, Dict[DetectorIdx, Tuple[float, float]]]]:
-            datetime_ = get_datetime(rusdraw)
+            try:
+                datetime_ = get_datetime(rusdraw)
+            except ValueError:
+                print(
+                    "Can't parse datetime from rusdraw: "
+                    + f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}"
+                )
+                return
             if datetime_ not in detector_data_by_event:
                 # this means that waveforms are present but didn't pass triggers / cuts
                 # print(f"Found datetime not present in nuf output: {datetime_}")
