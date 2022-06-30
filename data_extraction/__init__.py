@@ -6,7 +6,7 @@ import traceback
 from typing import Optional
 
 from .reconstruction import reconstruct, DetectorData
-from .waveform_processing import add_mu_ratios_to_detector_data
+from .waveform_processing import add_mu_data_to_detector_data
 
 
 HAS_WRITTEN_BEFORE = False
@@ -18,7 +18,7 @@ def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[str] = None)
         print("Reconstruction")
         detector_data_by_event = reconstruct(dat_name, temp_dir)
         print("Calculating muon ratio from waveforms")
-        add_mu_ratios_to_detector_data(dat_name, detector_data_by_event)
+        add_mu_data_to_detector_data(dat_name, detector_data_by_event)
     except Exception:
         print(f"ERROR processing {dat_name}:\n{traceback.format_exc()}\n")
         return
@@ -32,7 +32,9 @@ def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[str] = None)
         for data_by_detector in detector_data_by_event.values():
             for data in data_by_detector.values():
                 # this should be true most of the time
-                if data.mu_signal_ratio_bot is not None and data.mu_signal_ratio_top is not None:
+                if all(
+                    v is not None
+                    for v in (data.top_integral_all, data.top_integral_mu, data.bot_integral_all, data.bot_integral_mu)
+                ):
                     writer.writerow(asdict(data))
     HAS_WRITTEN_BEFORE = True
-

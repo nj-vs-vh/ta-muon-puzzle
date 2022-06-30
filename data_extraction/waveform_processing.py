@@ -27,7 +27,7 @@ def assemble_waveforms(wf_part_by_id: Dict[DetectorIdx, Dict[int, np.ndarray]]) 
     return np.array(wf_top), np.array(wf_bot)
 
 
-def add_mu_ratios_to_detector_data(dat_name: str, detector_data_by_event: DetectorDataByEvent):
+def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: DetectorDataByEvent):
     full_dst = DstFile(get_dst_file(dat_name, type=DstFileType.FULL))
     mu_dst = DstFile(get_dst_file(dat_name, type=DstFileType.MU))
     noise_dst = DstFile(get_dst_file(dat_name, type=DstFileType.NOISE))
@@ -82,18 +82,14 @@ def add_mu_ratios_to_detector_data(dat_name: str, detector_data_by_event: Detect
                     # otherwise this detector is not recognized as part of the shower plane fit
                     # or something like that...
                     assert xxyy in detector_data
-                    mu_ratios = []
                     for i in (0, 1):
-                        full_signal_integral_wo_noise = all_integrals[dt][xxyy][i] - noise_integrals[dt][xxyy][i]
-                        assert not np.isclose(full_signal_integral_wo_noise, 0)
-                        mu_ratio = mu_integrals[dt][xxyy][i] / full_signal_integral_wo_noise
-                        if mu_ratio > 1:
-                            # pure muon signals sometimes get fractions like 1.001 because of integral estimation error
-                            # print(f"Anomalous mu ratio {mu_ratio}: {dt} {xxyy}")
-                            mu_ratio = 1.0
-                        mu_ratios.append(mu_ratio)
-
-                    detector_data[xxyy].mu_signal_ratio_top = mu_ratios[1]  # rusdraw convention is 0 for bot, 1 for top
-                    detector_data[xxyy].mu_signal_ratio_bot = mu_ratios[0]
+                        all_integral_noiseless = all_integrals[dt][xxyy][i] - noise_integrals[dt][xxyy][i]
+                        all_integral_noiseless = max(all_integral_noiseless, 0.0)
+                        if i == 1:  # rusdraw convention is 0 for bot, 1 for top
+                            detector_data[xxyy].top_integral_all = all_integral_noiseless
+                            detector_data[xxyy].top_integral_mu = mu_integrals[dt][xxyy][i]
+                        else:
+                            detector_data[xxyy].bot_integral_all = all_integral_noiseless
+                            detector_data[xxyy].bot_integral_mu = mu_integrals[dt][xxyy][i]
                 except Exception:
                     pass
