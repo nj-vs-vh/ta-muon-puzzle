@@ -28,10 +28,10 @@ class DetectorData:
     dtapcnt_l: float
 
     # filled later
-    top_integral_all: Optional[float] = None
-    top_integral_mu: Optional[float] = None
-    bot_integral_all: Optional[float] = None
-    bot_integral_mu: Optional[float] = None
+    top_S_all: Optional[float] = None
+    top_S_mu: Optional[float] = None
+    bot_S_all: Optional[float] = None
+    bot_S_mu: Optional[float] = None
 
 
 DetectorIdx = int

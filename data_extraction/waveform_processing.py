@@ -27,6 +27,10 @@ def assemble_waveforms(wf_part_by_id: Dict[DetectorIdx, Dict[int, np.ndarray]]) 
     return np.array(wf_top), np.array(wf_bot)
 
 
+VEM_PER_MIP = 1.22
+DETECTOR_AREA = 3.0  # m^2
+
+
 def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: DetectorDataByEvent):
     full_dst = DstFile(get_dst_file(dat_name, type=DstFileType.FULL))
     mu_dst = DstFile(get_dst_file(dat_name, type=DstFileType.MU))
@@ -34,7 +38,7 @@ def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: Detector
 
     with full_dst, mu_dst, noise_dst:
 
-        #                                                                          xxyy: waveform integrals top/bot
+        #                                                  ( event dt,           { xxyy:      (S top, S bot) } )
         def process_rusdraw(rusdraw: Bank) -> Optional[Tuple[datetime, Dict[DetectorIdx, Tuple[float, float]]]]:
             try:
                 datetime_ = get_datetime(rusdraw)
@@ -50,46 +54,48 @@ def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: Detector
                 return None
 
             fadcti_arr: np.ndarray = rusdraw['fadcti']
+            mip_arr: np.ndarray = rusdraw['mip']
             xxyy_arr: np.ndarray = rusdraw['xxyy']
-            fadc_integrals_by_detector = defaultdict(lambda: np.zeros((2,)))
+            S_by_detector: Dict[DetectorIdx, np.ndarray] = defaultdict(lambda: np.zeros((2,)))
             for i in range(rusdraw['nofwf']):
-                fadc_integrals_by_detector[xxyy_arr[i]] += fadcti_arr[i]
-
+                S_by_detector[xxyy_arr[i]] += VEM_PER_MIP * fadcti_arr[i] / mip_arr[i] / DETECTOR_AREA
             return (
                 datetime_,
-                {xxyy: tuple(top_bot_integrals) for xxyy, top_bot_integrals in fadc_integrals_by_detector.items()},
+                {xxyy: tuple(S_top_bot) for xxyy, S_top_bot in S_by_detector.items()},
             )
 
-        all_integrals, mu_integrals, noise_integrals = dict(), dict(), dict()
+        S_all: Dict[datetime, Dict[DetectorIdx, Tuple[float, float]]] = dict()
+        S_mu: Dict[datetime, Dict[DetectorIdx, Tuple[float, float]]] = dict()
+        S_noise: Dict[datetime, Dict[DetectorIdx, Tuple[float, float]]] = dict()
         for dst in (full_dst, mu_dst, noise_dst):
             for _ in dst.events():
                 res = process_rusdraw(dst.get_bank('rusdraw'))
                 if res is None:
                     continue
-                dt, integrals_by_detector = res
+                dt, S_by_detector = res
                 if dst is full_dst:
-                    integrals = all_integrals
+                    S_smth = S_all
                 elif dst is mu_dst:
-                    integrals = mu_integrals
+                    S_smth = S_mu
                 else:
-                    integrals = noise_integrals
-                integrals[dt] = integrals_by_detector
+                    S_smth = S_noise
+                S_smth[dt] = S_by_detector
 
-        for dt in all_integrals:
+        for dt in S_all:
             detector_data = detector_data_by_event[dt]
-            for xxyy in all_integrals[dt]:
+            for xxyy in S_all[dt]:
                 try:
                     # otherwise this detector is not recognized as part of the shower plane fit
                     # or something like that...
                     assert xxyy in detector_data
                     for i in (0, 1):
-                        all_integral_noiseless = all_integrals[dt][xxyy][i] - noise_integrals[dt][xxyy][i]
-                        all_integral_noiseless = max(all_integral_noiseless, 0.0)
+                        S_noiseless = S_all[dt][xxyy][i] - S_noise[dt][xxyy][i]
+                        S_noiseless = max(S_noiseless, 0.0)
                         if i == 1:  # rusdraw convention is 0 for bot, 1 for top
-                            detector_data[xxyy].top_integral_all = all_integral_noiseless
-                            detector_data[xxyy].top_integral_mu = mu_integrals[dt][xxyy][i]
+                            detector_data[xxyy].top_S_all = S_noiseless
+                            detector_data[xxyy].top_S_mu = S_mu[dt][xxyy][i]
                         else:
-                            detector_data[xxyy].bot_integral_all = all_integral_noiseless
-                            detector_data[xxyy].bot_integral_mu = mu_integrals[dt][xxyy][i]
+                            detector_data[xxyy].bot_S_all = S_noiseless
+                            detector_data[xxyy].bot_S_mu = S_mu[dt][xxyy][i]
                 except Exception:
                     pass

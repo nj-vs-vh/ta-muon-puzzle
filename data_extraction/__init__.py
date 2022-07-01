@@ -34,7 +34,7 @@ def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[str] = None)
                 # this should be true most of the time
                 if all(
                     v is not None
-                    for v in (data.top_integral_all, data.top_integral_mu, data.bot_integral_all, data.bot_integral_mu)
+                    for v in (data.top_S_all, data.top_S_mu, data.bot_S_all, data.bot_S_mu)
                 ):
                     writer.writerow(asdict(data))
     HAS_WRITTEN_BEFORE = True
