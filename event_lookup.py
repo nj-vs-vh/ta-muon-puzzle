@@ -5,11 +5,12 @@ DATxxxxxx nams of the files containing specified datetimes.
 
 import argparse
 from datetime import datetime
+from io import StringIO
 import os
 from pathlib import Path
 import sys
 from typing import Set
-import tqdm
+from tqdm import tqdm
 from wurlitzer import pipes
 
 from dstreader import DstFile
@@ -35,8 +36,8 @@ if __name__ == "__main__":
     
     set_data_dir(data_dir_path)
 
-    with open(output_file, 'w') as out, pipes(stderr=os.devnull):
-        for dat_name in tqdm.tqdm(collect_dat_names(), unit="DAT", file=sys.stdout):
+    with open(output_file, 'w') as out, pipes(stderr=StringIO(), stdout=None):
+        for dat_name in tqdm(collect_dat_names(), unit="DAT", file=sys.stdout):
             dst_file = DstFile(get_dst_file(dat_name, DstFileType.FULL))
             with dst_file:
                 for _ in dst_file.events():
