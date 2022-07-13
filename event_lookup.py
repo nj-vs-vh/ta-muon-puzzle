@@ -36,7 +36,7 @@ if __name__ == "__main__":
     set_data_dir(data_dir_path)
 
     with open(output_file, 'w') as out, pipes(stderr=os.devnull):
-        for dat_name in tqdm.tqdm(collect_dat_names(), unit="DAT"):
+        for dat_name in tqdm.tqdm(collect_dat_names(), unit="DAT", file=sys.stdout):
             dst_file = DstFile(get_dst_file(dat_name, DstFileType.FULL))
             with dst_file:
                 for _ in dst_file.events():
