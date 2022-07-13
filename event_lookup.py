@@ -5,13 +5,10 @@ DATxxxxxx nams of the files containing specified datetimes.
 
 import argparse
 from datetime import datetime
-from io import StringIO
-import os
 from pathlib import Path
 import sys
-from typing import Set
+from typing import List, Set
 from tqdm import tqdm
-from wurlitzer import pipes
 
 from dstreader import DstFile
 
@@ -31,19 +28,22 @@ if __name__ == "__main__":
         sys.exit("data dir path does not exits")
     if output_file.exists():
         sys.exit("output path already exists")
-    timestamp_strs: Set[str] = set(args.timestamps)
-    timestamps = {datetime.fromisoformat(ts) for ts in timestamp_strs}
+    timestamp_strs: List[str] = set(args.timestamps)
+    lookup_timestamps = [datetime.fromisoformat(ts) for ts in timestamp_strs]
+
+    print("Looking for events with timestamps:\n" + "\n".join([str(ts) for ts in lookup_timestamps]))
     
     set_data_dir(data_dir_path)
 
-    with open(output_file, 'w') as out, pipes(stderr=StringIO(), stdout=None):
+    with open(output_file, 'w') as out:
         for dat_name in tqdm(collect_dat_names(), unit="DAT", file=sys.stdout):
             dst_file = DstFile(get_dst_file(dat_name, DstFileType.FULL))
             with dst_file:
                 for _ in dst_file.events():
                     try:
-                        event_datetime = get_datetime(dst_file.get_bank("rusdraw"))
-                        if event_datetime in timestamps:
-                            print(f"{event_datetime}\t{dat_name}", file=out)
+                        event_timestamp = get_datetime(dst_file.get_bank("rusdraw"))
+                        if event_timestamp in lookup_timestamps:
+                            print("MATCH FOUND!")
+                            print(f"{event_timestamp}\t{dat_name}", file=out)
                     except Exception:
                         pass
