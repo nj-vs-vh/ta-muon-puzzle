@@ -24,7 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", help="tsv output file")
     parser.add_argument("timestamps", nargs="+")
     args = parser.parse_args()
-    data_dir_path = Path(args.data_dir_path).resolve()
+    data_dir_path = Path(args.data_dir).resolve()
     output_file = Path(args.output).resolve()
     if not data_dir_path.exists():
         sys.exit("data dir path does not exits")
