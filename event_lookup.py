@@ -38,12 +38,15 @@ if __name__ == "__main__":
     with open(output_file, 'w') as out:
         for dat_name in tqdm(collect_dat_names(), unit="DAT", file=sys.stdout):
             dst_file = DstFile(get_dst_file(dat_name, DstFileType.FULL))
-            with dst_file:
-                for _ in dst_file.events():
-                    try:
-                        event_timestamp = get_datetime(dst_file.get_bank("rusdraw"))
-                        if event_timestamp in lookup_timestamps:
-                            print("MATCH FOUND!")
-                            print(f"{event_timestamp}\t{dat_name}", file=out)
-                    except Exception:
-                        pass
+            try:
+                with dst_file:
+                    for _ in dst_file.events():
+                        try:
+                            event_timestamp = get_datetime(dst_file.get_bank("rusdraw"))
+                            if event_timestamp in lookup_timestamps:
+                                print("MATCH FOUND!")
+                                print(f"{event_timestamp}\t{dat_name}", file=out)
+                        except Exception as e:
+                            print(f"ERROR parsing event: {e}")
+            except Exception as e:
+                print(f"ERROR reading file {e}")
