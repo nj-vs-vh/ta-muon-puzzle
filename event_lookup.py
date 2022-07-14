@@ -44,7 +44,7 @@ if __name__ == "__main__":
                         try:
                             event_timestamp = get_datetime(dst_file.get_bank("rusdraw"))
                             if event_timestamp in lookup_timestamps:
-                                print("MATCH FOUND!")
+                                print(f"MATCH FOUND: {event_timestamp} {dat_name}!")
                                 print(f"{event_timestamp}\t{dat_name}", file=out)
                         except Exception as e:
                             print(f"ERROR parsing event: {e}")
