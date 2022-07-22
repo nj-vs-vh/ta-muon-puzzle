@@ -91,7 +91,12 @@ def get_S800_by_event(rufldf_file: Path) -> Dict[datetime, float]:
                 continue
             rufldf = dst.get_bank("rufldf")
             rusdraw = dst.get_bank("rusdraw")
-            result[parse_rusdraw_datetime(rusdraw)] = rufldf["s800"][0]
+            try:
+                event_datetime = parse_rusdraw_datetime(rusdraw)
+            except RuntimeError as e:
+                print(str(e))
+                continue
+            result[event_datetime] = rufldf["s800"][0]
     return result
 
 
