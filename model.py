@@ -1,12 +1,11 @@
 
-from dataclasses import dataclass
 import json
 import pathlib
+from dataclasses import dataclass
 from tempfile import NamedTemporaryFile
+
 import numpy as np
-
 import xgboost as xgb
-
 
 DEFAULT_MODELS_DIR = pathlib.Path(__file__).parent / "trained_models"
 DEFAULT_MODELS_DIR.mkdir(exist_ok=True)

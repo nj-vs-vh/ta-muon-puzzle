@@ -1,19 +1,14 @@
-import numpy as np
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
 from dstreader import DstFile  # type: ignore
 from dstreader.bank import Bank  # type: ignore
 
-from typing import List, Optional, Tuple, Dict
-
+from .filenames import DstFileType, get_dst_file
 from .reconstruction import DetectorDataByEvent, DetectorIdx
-from .filenames import get_dst_file, DstFileType
-
-
-def parse_rusdraw_datetime(rusdraw: Bank) -> datetime:
-    return datetime.strptime(
-        f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}", r"%y%m%d %H%M%S %f"
-    )
+from .utils import parse_rusdraw_datetime
 
 
 def assemble_waveforms(wf_part_by_id: Dict[DetectorIdx, Dict[int, np.ndarray]]) -> Tuple[np.ndarray, np.ndarray]:

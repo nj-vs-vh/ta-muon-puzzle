@@ -1,13 +1,11 @@
-from pathlib import Path
-from dataclasses import fields, asdict
 import csv
 import traceback
-
+from dataclasses import asdict, fields
+from pathlib import Path
 from typing import Optional
 
-from .reconstruction import reconstruct, DetectorData
+from .reconstruction import DetectorData, reconstruct
 from .waveform_processing import add_mu_data_to_detector_data
-
 
 HAS_WRITTEN_BEFORE = False
 
@@ -32,9 +30,6 @@ def process_dat(dat_name: str, output_csv: Path, temp_dir: Optional[str] = None)
         for data_by_detector in detector_data_by_event.values():
             for data in data_by_detector.values():
                 # this should be true most of the time
-                if all(
-                    v is not None
-                    for v in (data.top_S_all, data.top_S_mu, data.bot_S_all, data.bot_S_mu)
-                ):
+                if all(v is not None for v in (data.top_S_all, data.top_S_mu, data.bot_S_all, data.bot_S_mu)):
                     writer.writerow(asdict(data))
     HAS_WRITTEN_BEFORE = True

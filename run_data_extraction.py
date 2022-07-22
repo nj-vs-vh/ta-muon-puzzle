@@ -1,12 +1,12 @@
-from pathlib import Path
-from tqdm.contrib.concurrent import process_map  # type: ignore
-import os
 import argparse
+import os
+from pathlib import Path
+
+from tqdm.contrib.concurrent import process_map  # type: ignore
 from wurlitzer import pipes  # type: ignore
 
 from data_extraction import process_dat
-from data_extraction.filenames import set_data_dir, collect_dat_names
-
+from data_extraction.filenames import collect_dat_names, set_data_dir
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from pathlib import Path
 import subprocess
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, Optional
 
 from dstreader import DstFile  # type: ignore
 
-from typing import Dict, Optional
-
-from data_extraction.waveform_processing import parse_rusdraw_datetime
-
 from .filenames import get_dst_file
+from .utils import parse_rusdraw_datetime
 
 
 @dataclass

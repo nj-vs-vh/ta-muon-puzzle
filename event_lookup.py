@@ -4,17 +4,17 @@ DATxxxxxx nams of the files containing specified datetimes.
 """
 
 import argparse
+import sys
 from datetime import datetime
 from pathlib import Path
-import sys
 from typing import Set
-from tqdm import tqdm  # type: ignore
 
 from dstreader import DstFile  # type: ignore
+from tqdm import tqdm  # type: ignore
 
-from data_extraction.filenames import set_data_dir, collect_dat_names, get_dst_file, DstFileType
+from data_extraction.filenames import (DstFileType, collect_dat_names,
+                                       get_dst_file, set_data_dir)
 from data_extraction.waveform_processing import parse_rusdraw_datetime
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

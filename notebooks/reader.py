@@ -1,8 +1,8 @@
-from typing import Tuple
-import pandas as pd  # type: ignore
 from pathlib import Path
-import numpy as np
+from typing import Tuple
 
+import numpy as np
+import pandas as pd  # type: ignore
 
 ROOT_DIR = Path(__file__).parent.parent
 SAMPLE_CSV = ROOT_DIR / "data/muon-puzzle-data-iron-fraction-v3.csv"
