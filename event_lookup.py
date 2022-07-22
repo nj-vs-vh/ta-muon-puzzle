@@ -7,13 +7,13 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 import sys
-from typing import List, Set
-from tqdm import tqdm
+from typing import Set
+from tqdm import tqdm  # type: ignore
 
-from dstreader import DstFile
+from dstreader import DstFile  # type: ignore
 
 from data_extraction.filenames import set_data_dir, collect_dat_names, get_dst_file, DstFileType
-from data_extraction.waveform_processing import get_datetime
+from data_extraction.waveform_processing import parse_rusdraw_datetime
 
 
 if __name__ == "__main__":
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         sys.exit("data dir path does not exits")
     if output_file.exists():
         sys.exit("output path already exists")
-    timestamp_strs: List[str] = set(args.timestamps)
+    timestamp_strs: Set[str] = set(args.timestamps)
     lookup_timestamps = [datetime.fromisoformat(ts) for ts in timestamp_strs]
 
     print("Looking for events with timestamps:\n" + "\n".join([str(ts) for ts in lookup_timestamps]))
@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 with dst_file:
                     for _ in dst_file.events():
                         try:
-                            event_timestamp = get_datetime(dst_file.get_bank("rusdraw"))
+                            event_timestamp = parse_rusdraw_datetime(dst_file.get_bank("rusdraw"))
                             if event_timestamp in lookup_timestamps:
                                 print(f"MATCH FOUND: {event_timestamp} {dat_name}!")
                                 print(f"{event_timestamp}\t{dat_name}", file=out)

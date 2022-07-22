@@ -1,7 +1,7 @@
 from pathlib import Path
 from enum import Enum
 
-from typing import List, Optional, Set
+from typing import List, Optional, Set, cast
 
 
 class DstFileType(Enum):
@@ -28,10 +28,10 @@ def set_data_dir(new: Path):
 
 def collect_dat_names() -> List[str]:
     assert_data_dir_set()
-    dir: Path = DATA_DIR
+    dir = cast(Path, DATA_DIR)
     return sorted({file.name[:9] for file in dir.iterdir() if file.is_file() and file.name.startswith("DAT")})
 
 
 def get_dst_file(dat_name: str, type: DstFileType = DstFileType.FULL) -> Path:
     assert_data_dir_set()
-    return DATA_DIR / f"{dat_name}_{type.value}_gea.dst.gz"
+    return cast(Path, DATA_DIR) / f"{dat_name}_{type.value}_gea.dst.gz"

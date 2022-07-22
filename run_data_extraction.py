@@ -1,8 +1,8 @@
 from pathlib import Path
-from tqdm.contrib.concurrent import process_map
+from tqdm.contrib.concurrent import process_map  # type: ignore
 import os
 import argparse
-from wurlitzer import pipes
+from wurlitzer import pipes  # type: ignore
 
 from data_extraction import process_dat
 from data_extraction.filenames import set_data_dir, collect_dat_names

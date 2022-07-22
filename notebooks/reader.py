@@ -1,5 +1,5 @@
 from typing import Tuple
-import pandas as pd
+import pandas as pd  # type: ignore
 from pathlib import Path
 import numpy as np
 

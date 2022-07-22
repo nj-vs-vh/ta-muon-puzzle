@@ -108,12 +108,12 @@ int main(int argc, char **argv)
 		addBankList(outBanks, RUSDRAW_BANKID);
 		//  sprintf(outFile,"%s.dst.gz", argv[1]);
 		/*  sprintf(outFile,"%s_%d_gea.dst.gz", str1, np);
-    printf("outFile: %s\n", outFile);
+	printf("outFile: %s\n", outFile);
   if ((rc=dstOpenUnit(outUnit,outFile,outMode))< 0)
-    {
-      fprintf(stderr,"Can't start the dst file\n");
-      return -1;
-    }
+	{
+	  fprintf(stderr,"Can't start the dst file\n");
+	  return -1;
+	}
 */
 		sscanf(argv[2], "%d", &nEvent_global);
 		sscanf(argv[3], "%d", &randint);
@@ -202,12 +202,12 @@ int main(int argc, char **argv)
 			}
 		}
 		/*    for ( i = 0; i < NDATE*144; i++ )
-    {
-      printf ("%d ", i);
-      for ( j = 0; j < NCOUNTERS; j++ )
+	{
+	  printf ("%d ", i);
+	  for ( j = 0; j < NCOUNTERS; j++ )
 	printf("%f ", mftndof[i][j][1]);
-      printf("\n");
-      }*/
+	  printf("\n");
+	  }*/
 		fclose(f);
 
 		f = fopen("atmos.bin", "rb");
@@ -282,7 +282,7 @@ int main(int argc, char **argv)
 					randnum[2] = arand[aa][i][2];
 					randnum[3] = arand[aa][i][3];
 				}
-				//printf("nevt_global:%d, nevt:%d, rand1:%f, rand2:%f\n", aa, i, randnum[0], randnum[1]);
+				// printf("nevt_global:%d, nevt:%d, rand1:%f, rand2:%f\n", aa, i, randnum[0], randnum[1]);
 
 				phi[i] = randnum[2];
 				showertime[i] = randnum[3];
@@ -316,7 +316,7 @@ int main(int argc, char **argv)
 					}
 				}
 			}
-			//if(np==0 || np==5){  // atmos
+			// if(np==0 || np==5){  // atmos
 			if (np == 6)
 			{ // atmos
 				for (i = 0; i < nEvent; i++)
@@ -400,7 +400,7 @@ else{
 					aencor[aa][i] = encor[i];
 				else
 					encor[i] = aencor[aa][i];
-				//printf("nevt_global:%d, nevt:%d, encor:%f\n", aa, i, encor[i]);
+				// printf("nevt_global:%d, nevt:%d, encor:%f\n", aa, i, encor[i]);
 			}
 			rusdmc_.height = eventbuf[6];
 			rusdmc_.theta = eventbuf[10];
@@ -409,7 +409,7 @@ else{
 			{
 
 				////if((int)buf[0] < 1000) printf("np:%d, nevt_global:%d, buf0:%d, buf1:%d, buf2:%f, buf3:%f, buf4:%d, buf5:%f\n", np, aa, (int)buf[0], (int)buf[1], (float)buf[2], (float)buf[3], (int)buf[4], (float)buf[5]);
-				//printf("----- np:%d, nevt_global:%d, nevt:%d, buf0:%d, buf1:%d, buf2:%f, buf3:%f, buf4:%d, buf5:%f -----\n", np, aa, i, (int)buf[0], (int)buf[1], (float)buf[2], (float)buf[3], (int)buf[4], (float)buf[5]);
+				// printf("----- np:%d, nevt_global:%d, nevt:%d, buf0:%d, buf1:%d, buf2:%f, buf3:%f, buf4:%d, buf5:%f -----\n", np, aa, i, (int)buf[0], (int)buf[1], (float)buf[2], (float)buf[3], (int)buf[4], (float)buf[5]);
 
 				m = (int)buf[0];
 				n = (int)buf[1];
@@ -457,8 +457,8 @@ else{
 							mev_tmp = (float)buf[2] / 100. * VEM2MeV * encor[i];
 							amev_t = mev_tmp;
 							/*		      poisson_tmp = poissonf(mev_tmp*
-					     mevpoisson[(int)showertime[i]]
-					     [sdmap[m][n][i]][0]);
+						 mevpoisson[(int)showertime[i]]
+						 [sdmap[m][n][i]][0]);
 /*if(np==0){
   m_rand[aa][i][j][sdmap[m][n][i]][0] = poisson_tmp;
 }
@@ -469,17 +469,17 @@ else{
 			poisson_tmp *= 1.+ NPE2FADCE[0]/sqrtf(poisson_tmp)*
 			  randnum[0];
 //poisson_tmp = mev_tmp;
-		      mev[sdmap[m][n][i]][i][j][0] = poisson_tmp/
+			  mev[sdmap[m][n][i]][i][j][0] = poisson_tmp/
 			mevpoisson[(int)showertime[i]][sdmap[m][n][i]][0];
 */
 							if (np == 0)
 							{
 								mev[sdmap[m][n][i]][i][j][0] = mev_tmp;
-								//printf("   nevt_g:%d, nevt:%d, nsd:%d, sdmap:%d, buf0:%d, buf2:%f, encor:%f, amev_t:%f, mev_tmp0:%f, mev0:%f, poisson_tmp:%f, mevpoisson:%f\n", aa, i, j, sdmap[m][n][i], (int)buf[0], (float)buf[2], encor[i], amev_t, mev_tmp, mev[sdmap[m][n][i]][i][j][0], poisson_tmp, (float)mevpoisson[(int)showertime[i]][sdmap[m][n][i]][0]);
+								// printf("   nevt_g:%d, nevt:%d, nsd:%d, sdmap:%d, buf0:%d, buf2:%f, encor:%f, amev_t:%f, mev_tmp0:%f, mev0:%f, poisson_tmp:%f, mevpoisson:%f\n", aa, i, j, sdmap[m][n][i], (int)buf[0], (float)buf[2], encor[i], amev_t, mev_tmp, mev[sdmap[m][n][i]][i][j][0], poisson_tmp, (float)mevpoisson[(int)showertime[i]][sdmap[m][n][i]][0]);
 
-								//if(np==0){
-								//  if(mev_tmp == 0) m_rand[aa][i][j][sdmap[m][n][i]][0] =  0;
-								//  else m_rand[aa][i][j][sdmap[m][n][i]][0] = mev[sdmap[m][n][i]][i][j][0] / mev_tmp;
+								// if(np==0){
+								//   if(mev_tmp == 0) m_rand[aa][i][j][sdmap[m][n][i]][0] =  0;
+								//   else m_rand[aa][i][j][sdmap[m][n][i]][0] = mev[sdmap[m][n][i]][i][j][0] / mev_tmp;
 								if (amev_t == 0)
 									m_rand[aa][i][j][sdmap[m][n][i]][0] = 0;
 								else
@@ -503,8 +503,8 @@ else{
 							}
 							mev_tmp = (float)buf[3] / 100. * VEM2MeV * encor[i];
 							/*		      poisson_tmp = poissonf(mev_tmp*
-					     mevpoisson[(int)showertime[i]]
-					     [sdmap[m][n][i]][1]);
+						 mevpoisson[(int)showertime[i]]
+						 [sdmap[m][n][i]][1]);
 /*if(np==0){
   m_rand[aa][i][j][sdmap[m][n][i]][1] = poisson_tmp;
 }
@@ -514,13 +514,13 @@ else{
 							/*		      if (poisson_tmp > 0.)
 			poisson_tmp *= 1.+ NPE2FADCE[1]/sqrtf(poisson_tmp)*
 			  randnum[1];
-		      mev[sdmap[m][n][i]][i][j][1] = poisson_tmp/
+			  mev[sdmap[m][n][i]][i][j][1] = poisson_tmp/
 			mevpoisson[(int)showertime[i]][sdmap[m][n][i]][1];
 */
 							if (np == 0)
 							{
 								mev[sdmap[m][n][i]][i][j][1] = mev_tmp;
-								//if(np==0){
+								// if(np==0){
 								if (mev_tmp != 0)
 									m_rand[aa][i][j][sdmap[m][n][i]][1] = mev[sdmap[m][n][i]][i][j][1] / mev_tmp;
 								else
@@ -558,9 +558,9 @@ else{
 								if (time[sdmap[m][n][i]][i][j] < tmin[i])
 									tmin[i] = time[sdmap[m][n][i]][i][j];
 
-								//if(np==0){
-								//  m_rand[aa][i][j][sdmap[m][n][i]][0] =  mev[sdmap[m][n][i]][i][j][0];
-								//  m_rand[aa][i][j][sdmap[m][n][i]][1] =  mev[sdmap[m][n][i]][i][j][1];
+								// if(np==0){
+								//   m_rand[aa][i][j][sdmap[m][n][i]][0] =  mev[sdmap[m][n][i]][i][j][0];
+								//   m_rand[aa][i][j][sdmap[m][n][i]][1] =  mev[sdmap[m][n][i]][i][j][1];
 								t_rand[aa][i][j][sdmap[m][n][i]] = time[sdmap[m][n][i]][i][j];
 							}
 							else
@@ -576,7 +576,7 @@ else{
 								}
 							}
 
-							//printf("---p_rand   nevt_g:%d, nevt:%d, nsd:%d, sdmap:%f, m_rand0:%f, m_rand1:%f time:%d\n", aa, i, j, (float)sdmap[m][n][i], m_rand[aa][i][j][sdmap[m][n][i]][0], m_rand[aa][i][j][sdmap[m][n][i]][1],  time[sdmap[m][n][i]][i][j] );
+							// printf("---p_rand   nevt_g:%d, nevt:%d, nsd:%d, sdmap:%f, m_rand0:%f, m_rand1:%f time:%d\n", aa, i, j, (float)sdmap[m][n][i], m_rand[aa][i][j][sdmap[m][n][i]][0], m_rand[aa][i][j][sdmap[m][n][i]][1],  time[sdmap[m][n][i]][i][j] );
 							printf("np:%d, nevt_global:%d, buf0:%d, buf1:%d, buf2:%f, buf3:%f, buf4:%d, buf5:%f\n", np, aa, (int)buf[0], (int)buf[1], (float)buf[2], (float)buf[3], (int)buf[4], (float)buf[5]);
 							printf("---m_rand  nevt_g:%d, nevt:%d, nsd:%d, sdmap:%f, mev0:%f, mev1:%f time:%d\n", aa, i, j, (float)sdmap[m][n][i], mev[sdmap[m][n][i]][i][j][0], mev[sdmap[m][n][i]][i][j][1], time[sdmap[m][n][i]][i][j]);
 						}
@@ -629,8 +629,8 @@ else{
 								}
 								k++;
 							}
-							//if (k > 100) printf("%d %d\n", sdcoor[j][0], k);
-							//fflush(stdout);
+							// if (k > 100) printf("%d %d\n", sdcoor[j][0], k);
+							// fflush(stdout);
 							for (m = 0; m < FADC_TOT; m++)
 							{
 								for (k = 0; k < TMAX; k++)
@@ -679,7 +679,7 @@ else{
 									trigsum[n] += rint(fadc[j][i][m][n]);
 							while (m < FADC_TOT - 136)
 							{
-								//if ( wfnum >= FADC_TOT/2 && wfnum2 >= FADC_TOT/2) printf ("%d %d\n", wfnum, wfnum2);
+								// if ( wfnum >= FADC_TOT/2 && wfnum2 >= FADC_TOT/2) printf ("%d %d\n", wfnum, wfnum2);
 								if (trigsum[0] >
 										(float)pchped[(int)showertime[i]][j][0] +
 											0.3 * ONE_MIP_TH &&
@@ -711,7 +711,7 @@ else{
 									{
 										dtrigtable[j][i][wfnum2] = trigtable[j][i][wfnum];
 										/*			      printf("\t%d\t%d\t%d\n",wfnum2, m,
-							      dtrigtable[j][i][wfnum2]); */
+								  dtrigtable[j][i][wfnum2]); */
 										wfnum2++;
 									}
 									trigsum[0] = 0.;
@@ -740,7 +740,7 @@ else{
 						//	      if (deadtime[(int)showertime[i]][j] == 0 &&
 						//		  time[j][i][0] > -1000000 )
 						//		{
-						//printf("np:%d, nevt_global:%d, nevt:%d, ndet:%d, sdflg:%d\n", np, aa, i, j, sdflg[aa][i][j]);
+						// printf("np:%d, nevt_global:%d, nevt:%d, ndet:%d, sdflg:%d\n", np, aa, i, j, sdflg[aa][i][j]);
 						if (sdflg[aa][i][j] == 1)
 						{
 							if (np == 5)
@@ -786,35 +786,35 @@ else{
 								k++;
 							}
 							//  printf("np:%d, nevt_global:%d, nevt:%d, ndet:%d, ufadc:%f\n", np, aa, i, j, fadc[j][i][30][0]);
-							//if (k > 100) printf("%d %d\n", sdcoor[j][0], k);
-							//fflush(stdout);
+							// if (k > 100) printf("%d %d\n", sdcoor[j][0], k);
+							// fflush(stdout);
 							/*		  for ( m = 0; m < FADC_TOT; m++)
-		    {
-		      if (fadc[j][i][m][0] > sat[(int)showertime[i]][j][0])
-			{			
-			  printf("%g %g ", fadc[j][i][m][0], sat[(int)showertime[i]][j][0]); 
-			  fadc[j][i][m][0] = sat[(int)showertime[i]][j][0] + 
+			{
+			  if (fadc[j][i][m][0] > sat[(int)showertime[i]][j][0])
+			{
+			  printf("%g %g ", fadc[j][i][m][0], sat[(int)showertime[i]][j][0]);
+			  fadc[j][i][m][0] = sat[(int)showertime[i]][j][0] +
 			  ((fadc[j][i][m][0]-
 					sat[(int)showertime[i]][j][0])*
 				expf(-(ATTEN*
-				       (fadc[j][i][m][0]-
-					       sat[(int)showertime[i]][j][0])/
-				       FADC_NONLIN2)));
-			  printf("%g\n", fadc[j][i][m][0]);			
+					   (fadc[j][i][m][0]-
+						   sat[(int)showertime[i]][j][0])/
+					   FADC_NONLIN2)));
+			  printf("%g\n", fadc[j][i][m][0]);
 			}
-		      if (fadc[j][i][m][1] > sat[(int)showertime[i]][j][1])
-			fadc[j][i][m][1] = sat[(int)showertime[i]][j][1] + 
+			  if (fadc[j][i][m][1] > sat[(int)showertime[i]][j][1])
+			fadc[j][i][m][1] = sat[(int)showertime[i]][j][1] +
 			  ((fadc[j][i][m][1]-
 					sat[(int)showertime[i]][j][1])*
 				expf(-(ATTEN*
-				       (fadc[j][i][m][1]-
-					       sat[(int)showertime[i]][j][1])/
-				       FADC_NONLIN2)));
-		      if (fadc[j][i][m][0] > FADC_MAX) fadc[j][i][m][0] = 
+					   (fadc[j][i][m][1]-
+						   sat[(int)showertime[i]][j][1])/
+					   FADC_NONLIN2)));
+			  if (fadc[j][i][m][0] > FADC_MAX) fadc[j][i][m][0] =
 							 FADC_MAX;
-		      if (fadc[j][i][m][1] > FADC_MAX) fadc[j][i][m][1] = 
+			  if (fadc[j][i][m][1] > FADC_MAX) fadc[j][i][m][1] =
 							 FADC_MAX;
-		    }
+			}
 */
 							for (m = 0; m < FADC_TOT; m++)
 							{
@@ -833,7 +833,7 @@ else{
 									trigsum[n] += rint(fadc[j][i][m][n]);
 							while (m < FADC_TOT - 136)
 							{
-								//if ( wfnum >= FADC_TOT/2 && wfnum2 >= FADC_TOT/2) printf ("%d %d\n", wfnum, wfnum2);
+								// if ( wfnum >= FADC_TOT/2 && wfnum2 >= FADC_TOT/2) printf ("%d %d\n", wfnum, wfnum2);
 								if (trigsum[0] >
 										(float)pchped[(int)showertime[i]][j][0] +
 											0.3 * ONE_MIP_TH &&
@@ -865,7 +865,7 @@ else{
 									{
 										dtrigtable[j][i][wfnum2] = trigtable[j][i][wfnum];
 										/*			      printf("\t%d\t%d\t%d\n",wfnum2, m,
-							      dtrigtable[j][i][wfnum2]); */
+								  dtrigtable[j][i][wfnum2]); */
 										wfnum2++;
 									}
 									trigsum[0] = 0.;
@@ -886,14 +886,14 @@ else{
 							/*		  if ( wfnum > 0 || wfnum2 > 0 )
 				  printf("\t\t%d\t%d\t%d\n", sdcoor[j][0], wfnum, wfnum2); */
 						} // if(deadtime)
-						/*
-  while ( m < FADC_TOT-136 ){
-    trigtable[j][i][m] = atable[aa][i][j][m];
-    m++;
-  }
-*/
-					} // np > 0
-				}	  // for j
+						  /*
+	while ( m < FADC_TOT-136 ){
+	  trigtable[j][i][m] = atable[aa][i][j][m];
+	  m++;
+	}
+  */
+					}	  // np > 0
+				}		  // for j
 				for (j = 0; j < NCOUNTERS; j++)
 				{
 					p = 0;
@@ -961,8 +961,8 @@ else{
 
 				/*	  printf ("%g ", showertime[i]/144.);
 	  for ( j = 0; j < NCOUNTERS; j++ )
-	    printf("%d ", deadtime[(int)showertime[i]][j]);
-	    printf("\n\n"); */
+		printf("%d ", deadtime[(int)showertime[i]][j]);
+		printf("\n\n"); */
 				nofwf[i] = 0;
 				for (j = 0; j < NCOUNTERS; j++)
 				{
@@ -1008,8 +1008,8 @@ else{
 				}
 				else
 					time_offset = atime[aa][i];
-				//printf("np:%d, nevt_global:%d, nevt:%d, eventnum:%d, yymmdd:%d, hhmmss:%d, time_offset:%d\n", np, aa, i, rusdraw_.event_num, rusdraw_.yymmdd, rusdraw_.hhmmss, time_offset);
-				//time_offset = 24;
+				// printf("np:%d, nevt_global:%d, nevt:%d, eventnum:%d, yymmdd:%d, hhmmss:%d, time_offset:%d\n", np, aa, i, rusdraw_.event_num, rusdraw_.yymmdd, rusdraw_.hhmmss, time_offset);
+				// time_offset = 24;
 				rusdmc_.tc = time_offset + FADC_START - TOFFSET;
 				rusdraw_.usec = (int)(rusdmc_.tc / 50.);
 				////
@@ -1382,10 +1382,10 @@ void put2rusdraw()
 			}
 
 			/*
-	    CALIBRATION INFORMATION. SOME OF THESE ARE IMPORTANT, OR ELSE THE COUNER WILL GET CUT OUT 
-	    IN THE ANALYSIS.
-	    Because pedestals  (and 1MIP values) vary a lot with time, I'm going to give only their 'usual'
-	    values here.
+		CALIBRATION INFORMATION. SOME OF THESE ARE IMPORTANT, OR ELSE THE COUNER WILL GET CUT OUT
+		IN THE ANALYSIS.
+		Because pedestals  (and 1MIP values) vary a lot with time, I'm going to give only their 'usual'
+		values here.
 	  */
 
 			//	  rusdraw_.pchmip[iwf][k] = 119;     /* peak channel of 1MIP histograms */
@@ -1405,11 +1405,11 @@ void put2rusdraw()
 
 			/* Results from fitting 1MIP histograms */
 			/* number of degrees of freedom in 1MIP fit, using generic values, such that the counter
-	     is not cut out */
+		 is not cut out */
 			rusdraw_.mftndof[iwf][k] = 25;
 			/* 1MIP value.  Here, we calculate it as
-	     pchmip - 12/8 * pchped.  In real data analysis, I fit the 1MIP histogram to find a better
-	     peak value and get chi2, ndof which describe the goodness of the counter.*/
+		 pchmip - 12/8 * pchped.  In real data analysis, I fit the 1MIP histogram to find a better
+		 peak value and get chi2, ndof which describe the goodness of the counter.*/
 			// chi2 of the 1MIP fit, (ideal situation ...)
 			rusdraw_.mftchi2[iwf][k] = 25.0;
 			//    Don't worry about these variables, they are not used in the analysis.

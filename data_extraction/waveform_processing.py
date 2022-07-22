@@ -1,17 +1,16 @@
 import numpy as np
 from datetime import datetime
 from collections import defaultdict
-from dstreader import DstFile
-from dstreader.bank import Bank
+from dstreader import DstFile  # type: ignore
+from dstreader.bank import Bank  # type: ignore
 
-
-from typing import Optional, Tuple, Dict
+from typing import List, Optional, Tuple, Dict
 
 from .reconstruction import DetectorDataByEvent, DetectorIdx
 from .filenames import get_dst_file, DstFileType
 
 
-def get_datetime(rusdraw: Bank) -> datetime:
+def parse_rusdraw_datetime(rusdraw: Bank) -> datetime:
     return datetime.strptime(
         f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}", r"%y%m%d %H%M%S %f"
     )
@@ -19,8 +18,8 @@ def get_datetime(rusdraw: Bank) -> datetime:
 
 def assemble_waveforms(wf_part_by_id: Dict[DetectorIdx, Dict[int, np.ndarray]]) -> Tuple[np.ndarray, np.ndarray]:
     """Assemble waveforms from their 128-bin parts"""
-    wf_top = []
-    wf_bot = []
+    wf_top: List[float] = []
+    wf_bot: List[float] = []
     for wf_id in sorted(wf_part_by_id.keys()):
         wf_top.extend(wf_part_by_id[wf_id][1])  # 1 is top in rusdraw!
         wf_bot.extend(wf_part_by_id[wf_id][0])  # 0 is bot in rusdraw!
@@ -41,13 +40,13 @@ def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: Detector
         #                                                  ( event dt,           { xxyy:      (S top, S bot) } )
         def process_rusdraw(rusdraw: Bank) -> Optional[Tuple[datetime, Dict[DetectorIdx, Tuple[float, float]]]]:
             try:
-                datetime_ = get_datetime(rusdraw)
+                datetime_ = parse_rusdraw_datetime(rusdraw)
             except ValueError:
                 print(
                     "Can't parse datetime from rusdraw: "
                     + f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}"
                 )
-                return
+                return None
             if datetime_ not in detector_data_by_event:
                 # this means that waveforms are present but didn't pass triggers / cuts
                 # print(f"Found datetime not present in nuf output: {datetime_}")
@@ -61,7 +60,7 @@ def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: Detector
                 S_by_detector[xxyy_arr[i]] += VEM_PER_MIP * fadcti_arr[i] / mip_arr[i] / DETECTOR_AREA
             return (
                 datetime_,
-                {xxyy: tuple(S_top_bot) for xxyy, S_top_bot in S_by_detector.items()},
+                {xxyy: tuple(S_top_bot) for xxyy, S_top_bot in S_by_detector.items()},  # type: ignore
             )
 
         S_all: Dict[datetime, Dict[DetectorIdx, Tuple[float, float]]] = dict()
