@@ -36,7 +36,7 @@ def add_mu_data_to_detector_data(dat_name: str, detector_data_by_event: Detector
         def process_rusdraw(rusdraw: Bank) -> Optional[Tuple[datetime, Dict[DetectorIdx, Tuple[float, float]]]]:
             try:
                 datetime_ = parse_rusdraw_datetime(rusdraw)
-            except ValueError:
+            except RuntimeError:
                 print(
                     "Can't parse datetime from rusdraw: "
                     + f"{rusdraw['yymmdd']:06} {rusdraw['hhmmss']:06} {rusdraw['usec']}"
