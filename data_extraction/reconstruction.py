@@ -43,6 +43,8 @@ DetectorDataByEvent = Dict[datetime, Dict[DetectorIdx, DetectorData]]
 
 def parse_detector_data_by_event(nuf_output: str, S800_by_event: Dict[datetime, float]) -> DetectorDataByEvent:
     res: DetectorDataByEvent = defaultdict(dict)
+    lines_success = 0
+    lines_failure = 0
     for line in nuf_output.splitlines():
         try:
             assert line.startswith("MU ")
@@ -69,18 +71,27 @@ def parse_detector_data_by_event(nuf_output: str, S800_by_event: Dict[datetime, 
                 dtapcnt_u=float(tokens[12]),
                 dtapcnt_l=float(tokens[13]),
             )
+            lines_success += 1
+        except KeyError:
+            pass
         except Exception as e:
-            print(f"Can't parse line in nuf output: {line}\n\nError: {e}\n")
+            print(f"Can't parse line in nuf output: {line}\nError: {e!r}\n")
+            lines_failure += 1
+    if lines_failure > 0:
+        total_lines = lines_success + lines_failure
+        print(f"Failed {100 * lines_failure / total_lines:.3f}% lines out of {total_lines}")
     return res
 
 
 def get_S800_by_event(rufldf_file: Path) -> Dict[datetime, float]:
     result: Dict[datetime, float] = {}
     with DstFile(rufldf_file) as dst:
-        for _ in dst.events():
+        for banks in dst.events():
+            if "rufldf" not in banks:
+                continue
             rufldf = dst.get_bank("rufldf")
             rusdraw = dst.get_bank("rusdraw")
-            result[parse_rusdraw_datetime(rusdraw)] = rufldf["S800"][0]
+            result[parse_rusdraw_datetime(rusdraw)] = rufldf["s800"][0]
     return result
 
 
